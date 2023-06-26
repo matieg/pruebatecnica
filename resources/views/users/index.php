@@ -8,7 +8,7 @@
 </head>
 <body class="container container-admin">
     <header>
-        <h3>Bienvenido <?= $userAuth->name ?? '' ?></h3>
+        <h3>Bienvenido <?= auth()->name ?? '' ?></h3>
     </header>
 
     <?php include '../resources/templates/nav.php'; ?>
@@ -31,8 +31,10 @@
                         <tr>
                             <td><?= $user->name ?></td>
                             <td><?= $user->username ?></td>
-                            <td>
-                                <button class="btn btn-danger">Eliminar</button>
+                            <td class="d-flex flex-row">
+                                <form class="d-flex" action="user/delete/<?= $user->id ?>" method="POST">                                    
+                                    <button class="btn btn-danger">Eliminar</button>
+                                </form>
                                 <a href="<?= 'user/'.$user->id; ?>" class="btn btn-primary">Editar</a>
                             </td>
                         </tr>

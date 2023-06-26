@@ -35,21 +35,26 @@ class UserController{
             return view('users.create', ['message' => 'Ocurrió un error al guardar el usuario.']);
         }
     }
-    public function show($u){
-        $user = new User();
-        $u = $user->find($u->id);
-        return view('users.show');        
+    public function show($user){
+        $userModel = new User();
+        $user = $userModel->find($user->id);
+        return view('users.show', compact('user') );        
     }
     public function edit(){
         $users = new User();
         
     }
-    public function udpate(){
-        $users = new User();
-        
+    public function update($user, $request){
+        $userModel = new User();
+
+        $request['id'] = $user->id;
+        $userModel->update($request);
+
+        return redirect('home');        
     }
-    public function destroy(){
-        $users = new User();
-        
+    public function destroy($user){
+        $userModel = new User();
+        $userModel->delete($user->id);
+        return redirect('home');     
     }
 }

@@ -2,6 +2,7 @@
 
 namespace app\Controllers;
 
+use app\Middleware\AuthMiddleware;
 use app\Models\User;
 use Exception;
 
@@ -10,7 +11,7 @@ class AuthController{
     public function login($e){
         try{
             $user = new User();
-            $user = $user->where('user', @$e->user)->first();
+            $user = $user->where('username', @$e->username)->first();
             if(!$user)
                 throw new Exception('Usuario incorrecto');
             
@@ -18,6 +19,7 @@ class AuthController{
                 throw new Exception( 'Usuario incorrecto.');
             
             // auth()->setAuth($user);
+            AuthMiddleware::setAuth($user);
             
             return redirect('home');
         }catch(Exception $e){
@@ -25,8 +27,8 @@ class AuthController{
         }
     }
 
-    // public function logout(){
-    //     auth()->removeAuth();
-    //     return redirect('/');
-    // }
+    public function logout(){
+        AuthMiddleware::removeAuth();
+        return redirect('/');
+    }
 }

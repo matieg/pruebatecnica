@@ -2,56 +2,48 @@
 
 use app\Controllers\AuthController;
 use app\Controllers\UserController;
+use app\Middleware\AuthMiddleware;
 use Helpers\Route;
 
 Route::get('/', function(){
     return view('index');
 });
 Route::post('/login', [AuthController::class, 'login']);
+Route::get('/logout', [AuthController::class, 'logout']);
 
-Route::get('/home', [UserController::class, 'index'] );
+Route::middleware( [AuthMiddleware::class, 'AuthCheck'] , function(){
+    
+    Route::get('/home', [UserController::class, 'index'] );
+});
 
 Route::get('/user/create', [UserController::class, 'create'] );
 Route::post('/user/create', [UserController::class, 'store'] );
 
 Route::get('/user/:id', [UserController::class, 'show'] );
-// Route::put('/user/update/:id', [UserController::class, 'store'] );
+Route::post('/user/:id', [UserController::class, 'update'] );
+
+Route::post('/user/delete/:id', [UserController::class, 'destroy'] );
 
 Route::get('/error', function(){
     return view('404');
 });
 
-
-
-
-Route::get('/create', function(){
-    // return 'asdasdasdasd';
-    return view('users.index');
-});
-Route::get('/conparametros/:id/:otro', function($e){
-    var_dump($e->id);
-    return 'asdasdasd';
-});
 Route::get('/create-db', function($e){
-    $servername = "localhost";
-    $username = "root";
-    $password = "";
+    $db_host = DB_HOST;
+    $db_user = DB_USER;
+    $db_pass = DB_PASS;
     
-    // Establecer conexión con la base de datos
-    $conn = new mysqli($servername, $username, $password);
+    $conn = new mysqli($db_host, $db_user, $db_pass);
     
     // Verificar la conexión
     if ($conn->connect_error) {
         die("Error al conectar con la base de datos: " . $conn->connect_error);
     }
     
-    // Ruta del archivo .sql
     $file = "../mysqlseed/database.sql";
     
-    // Leer el contenido del archivo .sql
     $sql = file_get_contents($file);
     
-    // Ejecutar el contenido del archivo .sql
     if (mysqli_multi_query($conn, $sql)) {
         echo "Archivo SQL ejecutado correctamente.";
     } else {

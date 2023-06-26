@@ -11,7 +11,6 @@ class Route extends Controller{
     public static function get($uri, $callback)
     {
         $uri = trim($uri, '/');
-        // self::$routes['GET'][$uri] = $callback;
         $data = [
             'method' => 'GET',
             'uri' => $uri,
@@ -30,6 +29,17 @@ class Route extends Controller{
         ];
         array_push(self::$routes, $data);
     }
+    public static function middleware($uri, $callback)
+    {
+        $middleware = new $uri[0];
+        $a = $middleware->{$uri[1]}();
+        if($a)
+            return $callback();
+        else
+            return false;
+            // return redirect('');
+        
+    }
 
     public static function dispatch()
     {
@@ -42,7 +52,7 @@ class Route extends Controller{
         
         $method = $_SERVER['REQUEST_METHOD'];
         
-        $params = $_POST ?? null;
+        $postParams = $_POST ?? null;
 
         $routesMethod = array_filter(self::$routes, function($route) use ($method){
             if($route['method'] == $method)
@@ -56,17 +66,17 @@ class Route extends Controller{
                 $route['uri'] = $routeParamsReplaced[0];
             }
             
-            $k = $projectname.'/'.$route['uri'];
-            $k = trim($k, '/');
+            $fullRoute = $projectname.'/'.$route['uri'];
+            $fullRoute = trim($fullRoute, '/');
             
-            if( preg_match("#^$k$#", $uri, $matches) ){
+            if( preg_match("#^$fullRoute$#", $uri, $matches) ){
                 self::$paramsmatches = $matches;
                 return $route;
             }
             return null;
         });
+
         if(!$routeMatch){
-            echo 404;
             return redirect('error');
         }
 
@@ -74,21 +84,24 @@ class Route extends Controller{
         
         $callback = $routeMatch['callback'];
         
+        $paramsReplacedNames = null;
         if( strpos($routeMatch['uri'], ':') !== false )
         {
-            $params = self::replaceRouteParams($routeMatch['uri']);
-            $params = array_combine($params[1], array_slice(self::$paramsmatches, 1));
+            $paramsReplacedNames = self::replaceRouteParams($routeMatch['uri']);
+            $paramsReplacedNames = array_combine($paramsReplacedNames[1], array_slice(self::$paramsmatches, 1));
         }        
-        
-        if( is_callable($callback) ){
-            $response = $callback( (object) $params );
-        }
 
-        if( is_array($callback) ){
-            $controller = new $callback[0];
-            $response = $controller->{ $callback[1] }( (object) $params );
+        if( is_callable($callback) && !is_array($callback) ){
+            $response = $callback( (object) $paramsReplacedNames, (object) $postParams );
         }
         
+        if( is_array($callback) ){
+            if($paramsReplacedNames == null)
+                $paramsReplacedNames = $postParams;
+                
+            $controller = new $callback[0];
+            $response = $controller->{ $callback[1] }( (object) $paramsReplacedNames, $postParams );
+        }
         if( is_array($response) || is_object($response) ){
             echo json_encode($response);
         }else{

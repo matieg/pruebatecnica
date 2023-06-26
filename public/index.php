@@ -1,4 +1,5 @@
 <?php
+session_start();
 require_once '../helpers/Helpers.php';
 require_once basePath('config/config.php');
 require_once basePath('autoload.php');

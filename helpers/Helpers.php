@@ -1,5 +1,6 @@
 <?php
 use app\Controllers\Controller;
+use app\Middleware\AuthMiddleware;
 
 function basePath($filename)
 {
@@ -37,10 +38,9 @@ if (! function_exists('redirect')) {
     }
 }
 
-// if (! function_exists('auth')) {
-//     function auth()
-//     {
-//         $session = new SessionHelper();
-//         return $session;
-//     }
-// }
+if (! function_exists('auth')) {
+    function auth()
+    {
+        return AuthMiddleware::getAuth();
+    }
+}
