@@ -9,7 +9,7 @@
 <body>
     <section class="container">
         <div id="login" class="login">
-            <form action="login" method="post" class="form-container">
+            <form action="" method="post" class="form-container" onsubmit="return validation();">
                 <h1>Login</h1>
 
                 <?php if(isset($message)): ?>
@@ -18,18 +18,20 @@
 
                 <div class="input-container">
                     <label for="">Usuario</label>
-                    <input type="text" name="username">
+                    <span class="tooltip d-none">Por favor ingrese el nombre de usuario.</span>
+                    <input type="text" name="username" class="validate">
                 </div>
                 <div class="input-container">
                     <label for="">Contraseña</label>
-                    <input type="password" name="password">
+                    <span class="tooltip d-none">Por favor ingrese su contraseña.</span>
+                    <input type="password" name="password" class="validate">
                 </div>
-                <div class="d-flex justify-content-center flex-column">
-                    <a href="">Registrarme</a>
-                    <button>Login</button>
+                <div class="d-flex justify-content-end">
+                    <button class="btn btn-primary">Ingresar</button>
                 </div>
             </form>
         </div>
     </section>
+    <?php include '../resources/templates/scripts.php' ?>
 </body>
 </html>

@@ -8,14 +8,14 @@ use Helpers\Route;
 Route::get('/', function(){
     return view('index');
 });
-Route::post('/login', [AuthController::class, 'login']);
+Route::post('/', [AuthController::class, 'login']);
 Route::get('/logout', [AuthController::class, 'logout']);
 
-Route::middleware( [AuthMiddleware::class, 'AuthCheck'] , function(){
+// Route::middleware( [AuthMiddleware::class, 'AuthCheck'] , function(){
     
-    Route::get('/home', [UserController::class, 'index'] );
-});
+// });
 
+Route::get('/home', [UserController::class, 'index'] );
 Route::get('/user/create', [UserController::class, 'create'] );
 Route::post('/user/create', [UserController::class, 'store'] );
 

@@ -3,7 +3,14 @@ namespace app\Controllers;
 
 class Controller
 {
-    public function view($route, $data = [])
+
+    /**
+     * Renderiza la vista
+     * @param string $route Ruta de la vista a renderizar separadas por puntos. Ej: users.index
+     * @param array $data Los datos o variables que se le pueden pasar a la vista, son opcionales.
+     * @return string $content Retorna loq ue se va a mostrar en la vista
+     */
+    public function view(string $route, array $data = [])
     {
         //destructura el array y me deja accesder a ellas directamente
         extract($data);
@@ -22,9 +29,13 @@ class Controller
         }
     }
 
-    public function redirect($route)
+    /**
+     * Redirecciona a una vista ya creada en algun controlador
+     * @param string $route Url de la vista a la que se va a redireccionar
+     */
+    public function redirect($route): void
     {
-        $projectName = projectName() ?? '';
-        header("Location: /{$projectName}/{$route}");
+        $projectName = projectName() ? '/'.projectName() : '';
+        header("Location: {$projectName}{$route}");
     }
 }

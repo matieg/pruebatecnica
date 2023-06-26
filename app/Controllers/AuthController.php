@@ -8,26 +8,32 @@ use Exception;
 
 class AuthController{
 
-    public function login($e){
+    public function login(object $request)
+    {
         try{
+            if( empty($request->username) )
+                throw new Exception('Nombre requerido.');
+            if( empty($request->password) )
+                throw new Exception('Password requerido.');
+
             $user = new User();
-            $user = $user->where('username', @$e->username)->first();
+            $user = $user->where('username', @$request->username)->first();
             if(!$user)
                 throw new Exception('Usuario incorrecto');
             
-            if( !password_verify($e->password, $user->password) )
-                throw new Exception( 'Usuario incorrecto.');
+            if( !password_verify($request->password, $user->password) )
+                throw new Exception( 'Contraseña incorrecta.');
             
-            // auth()->setAuth($user);
             AuthMiddleware::setAuth($user);
             
-            return redirect('home');
-        }catch(Exception $e){
-            return view('index', array('message' => $e->getMessage()));
+            return redirect('/home');
+        }catch(Exception $error){
+            return view('index', array('message' => $error->getMessage()));
         }
     }
 
-    public function logout(){
+    public function logout()
+    {
         AuthMiddleware::removeAuth();
         return redirect('/');
     }

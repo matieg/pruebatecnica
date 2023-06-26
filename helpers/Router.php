@@ -1,14 +1,18 @@
 <?php
 namespace Helpers;
 
-use app\Controllers\Controller;
+use App\Controllers\Controller;
 
 class Route extends Controller{
     private static $routes = [];
-    private static $paramsmatches;
-
+    private static $paramsMatches;
     
-    public static function get($uri, $callback)
+    /**
+     * Rutas que se ejecutaran con el metodo get
+     * @param string $uri Url de la ruta
+     * @param callable $callback funcion asociada a la ruta (controlador que usa)
+     */
+    public static function get(string $uri, array|callable $callback): void
     {
         $uri = trim($uri, '/');
         $data = [
@@ -18,8 +22,13 @@ class Route extends Controller{
         ];
         array_push(self::$routes, $data);
     }
-    
-    public static function post($uri, $callback)
+
+    /**
+     * Rutas que se ejecutaran con el metodo post
+     * @param string $uri Url de la ruta
+     * @param callable $callback funcion asociada a la ruta (controlador que usa)
+     */
+    public static function post(string $uri, array|callable $callback): void
     {
         $uri = trim($uri, '/');
         $data = [
@@ -29,22 +38,26 @@ class Route extends Controller{
         ];
         array_push(self::$routes, $data);
     }
-    public static function middleware($uri, $callback)
-    {
-        $middleware = new $uri[0];
-        $a = $middleware->{$uri[1]}();
-        if($a)
-            return $callback();
-        else
-            return false;
-            // return redirect('');
+    // public static function middleware($uri, $callback)
+    // {
+    //     $middleware = new $uri[0];
+    //     $a = $middleware->{$uri[1]}();
+    //     if($a)
+    //         return $callback();
+    //     else{
+    //         var_dump('no paso');
+    //         return false;
+    //     }
+    //         // return redirect('');
         
-    }
+    // }
 
+    /**
+     * Encuentra la ruta para ejecutar el callback correspondiente
+     */
     public static function dispatch()
-    {
-        
-        $projectname = projectName();
+    {        
+        $projectName = projectName();
         
         $uri = $_SERVER['REQUEST_URI'];
         
@@ -59,68 +72,71 @@ class Route extends Controller{
                 return $route;
             return null;
         });
-        $routeMatch = array_filter($routesMethod, function($route) use ($uri, $projectname){
+        $routeMatch = array_filter($routesMethod, function($route) use ($uri, $projectName){
             
-            if( strpos($route['uri'], ':') !== false ){
-                $routeParamsReplaced = self::replaceRouteParams($route['uri']);
-                $route['uri'] = $routeParamsReplaced[0];
-            }
+            $route['uri'] = self::replaceRouteParams($route['uri'])['route'] ?? $route['uri'];
             
-            $fullRoute = $projectname.'/'.$route['uri'];
+            $fullRoute = $projectName.'/'.$route['uri'];
             $fullRoute = trim($fullRoute, '/');
             
             if( preg_match("#^$fullRoute$#", $uri, $matches) ){
-                self::$paramsmatches = $matches;
+                self::$paramsMatches = $matches;
                 return $route;
             }
             return null;
         });
-
+        
         if(!$routeMatch){
-            return redirect('error');
+            return redirect('/error');
         }
 
         $routeMatch = array_values($routeMatch)[0];
         
         $callback = $routeMatch['callback'];
         
-        $paramsReplacedNames = null;
-        if( strpos($routeMatch['uri'], ':') !== false )
-        {
-            $paramsReplacedNames = self::replaceRouteParams($routeMatch['uri']);
-            $paramsReplacedNames = array_combine($paramsReplacedNames[1], array_slice(self::$paramsmatches, 1));
-        }        
+        $paramsReplacedNames = self::replaceRouteParams($routeMatch['uri']);
 
+        if($paramsReplacedNames)
+            $paramsReplacedNames = array_combine($paramsReplacedNames['paramNames'], array_slice(self::$paramsMatches, 1));
+        else
+            $paramsReplacedNames = $postParams;
+        
         if( is_callable($callback) && !is_array($callback) ){
             $response = $callback( (object) $paramsReplacedNames, (object) $postParams );
         }
         
-        if( is_array($callback) ){
-            if($paramsReplacedNames == null)
-                $paramsReplacedNames = $postParams;
-                
+        if( is_array($callback) ){                
             $controller = new $callback[0];
             $response = $controller->{ $callback[1] }( (object) $paramsReplacedNames, $postParams );
         }
+
         if( is_array($response) || is_object($response) ){
             echo json_encode($response);
         }else{
             echo $response;
         }
     }
-    private static function replaceRouteParams($route)
+
+    /**
+    * retorna la ruta con los parametros (:id) remplazados por expresiones regulares y sus nombres
+    * @param string $route ruta original
+    * @return array Retorna la ruta actualizada con expresiones regulares y los nombres de los parametros.
+    *               Si no se encuentran devuelve null
+    */
+    private static function replaceRouteParams(string $route): ?array
     {
         $paramNames = [];
         $segments = explode('/', $route);
         
-        foreach ($segments as $key => $segment) {
-            if (strpos($segment, ':') === 0) {
+        if (strpos($route, ':') !== false) {
+            foreach ($segments as $key => $segment) {
                 $paramName = str_replace(':', '', $segment);
                 $segments[$key] = '([a-zA-Z0-9]+)';
                 $paramNames[] = $paramName;
             }
+            $route = implode('/', $segments);
+            return ['route' => $route, 'paramNames' => $paramNames];
         }
-        $route = implode('/', $segments);        
-        return [$route, $paramNames];
+        return null;
     }
 }
