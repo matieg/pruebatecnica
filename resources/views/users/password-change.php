@@ -10,6 +10,7 @@
     
     <?php include '../resources/templates/header.php'; ?>
     <?php include '../resources/templates/nav.php'; ?>
+    <?php include '../resources/templates/dialog.php'; ?>
 
     <section class="section-container">
         <article class="card">
@@ -17,7 +18,7 @@
                 <h1>Crear usuarios</h1>
             </div>
             <div class="card-container">
-                <form action="password/change" method="POST" class="form-container" onsubmit="return validationPassword();">
+                <form action="password/change" method="POST" class="form-container" onsubmit="return dialogValidation('Estas a punto de modificar la contraseña. ¿Deseas continuar?');">
                     <?php if(isset($message)): ?>
                         <div class="message message-error"> <p class="text-center"> <?= $message ?? '' ?> </p> </div>
                     <?php endif; ?>
@@ -44,5 +45,12 @@
         </article>
     </section>
     <?php include '../resources/templates/scripts.php' ?>
+    <script>
+        const dialogValidation = (message) => {
+            if(validationPassword())
+                openDialog(message);
+            return false;
+        }
+    </script>
 </body>
 </html>

@@ -1,4 +1,4 @@
-<dialog id="favDialog">
+<dialog id="dialog">
     <form method="dialog">
         <section>
             <h1 class="text-center">¡Atencion!</h1>

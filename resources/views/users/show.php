@@ -10,6 +10,7 @@
     
     <?php include '../resources/templates/header.php'; ?>
     <?php include '../resources/templates/nav.php'; ?>
+    <?php include '../resources/templates/dialog.php'; ?>
     
     <section class="section-container">
         <article class="card">
@@ -17,8 +18,7 @@
                 <h1>Modificar datos</h1>
             </div>
             <div class="card-container">
-                <form action="user/<?= $user->id ?>" id="form" method="POST" class="form-container" onsubmit="return validation();">
-                    <?php if( isset($message) ): ?>
+                <form action="user/<?= $user->id ?>" id="form" method="POST" class="form-container" onsubmit="return dialogValidation('¿Desea confirmar los datos modificados?');">                    <?php if( isset($message) ): ?>
                         <div class="message message-error"> <p class="text-center"> <?= $message ?? '' ?> </p> </div>
                     <?php endif; ?>
                     <div class="input-container">
@@ -35,7 +35,7 @@
                         <?php if( auth()->id == $user->id ): ?>
                             <a href="password-change" class="btn btn-primary">Modificar mi contraseña</a>
                         <?php else: ?>
-                            <a href="password/reset/<?= $user->id ?>" class="btn btn-primary">Reestablecer contraseña</a>
+                            <button onclick="return openDialogButton('Estas a punto de restaurar la contraseña para este usuario. La misma va a ser 123456 por defecto. ¿Deseas continuar?', 'password/reset/<?= $user->id ?>');" class="btn btn-primary">Reestablecer contraseña</button>
                         <?php endif ?>
                         <button class="btn btn-success">Guardar</button>
                     </div>
@@ -44,5 +44,13 @@
         </article>
     </section>
     <?php include '../resources/templates/scripts.php' ?>
+    <script>
+        const dialogValidation = (message) => {
+            if(validation())
+                openDialog(message);
+            return false;
+        }
+        
+    </script>
 </body>
 </html>

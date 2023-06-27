@@ -107,6 +107,12 @@ nav ul li:hover{
     background-color: #153881;
 }
 
+/*dialog*/
+#dialog{    
+    border: 1px solid rgb(116 120 125 / 32%);
+    box-shadow: rgba(11, 43, 158, 0.15) 0px 6px 20px -6px;
+}
+
 /* card*/
 .card{
     background-color: #fff;
