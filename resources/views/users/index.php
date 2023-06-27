@@ -10,7 +10,8 @@
 
     <?php include '../resources/templates/header.php'; ?>
     <?php include '../resources/templates/nav.php'; ?>
-    
+    <?php include '../resources/templates/dialog.php'; ?>
+
     <section class="section-container">
         <article class="card">
             <div class="card-header">
@@ -38,7 +39,7 @@
                             <td><?= $user->name ?></td>
                             <td><?= $user->username ?></td>
                             <td class="d-flex flex-row">
-                                <form class="d-flex" action="user/delete/<?= $user->id ?>" method="POST">                                    
+                                <form class="d-flex" id="deleteUser" action="user/delete/<?= $user->id ?>" method="POST" onsubmit="return openDialog('Esta a punto de eliminar a este usuario. ¿Desea continuar?');">
                                     <button class="btn btn-danger">Eliminar</button>
                                 </form>
                                 <a href="<?= 'user/'.$user->id; ?>" class="btn btn-primary">Editar</a>
@@ -50,5 +51,6 @@
             </div>
         </article>
     </section>
+    <?php include '../resources/templates/scripts.php' ?>
 </body>
 </html>
