@@ -7,11 +7,10 @@
     <?php include '../resources/templates/head.php' ?>
 </head>
 <body class="container container-admin">
-    <header>
-        <h3>Bienvenido <?= auth()->name ?? '' ?></h3>
-    </header>
 
+    <?php include '../resources/templates/header.php'; ?>
     <?php include '../resources/templates/nav.php'; ?>
+    
     <section class="section-container">
         <article class="card">
             <div class="card-header">

@@ -71,6 +71,8 @@ class AuthController{
     
     public function passwordReset($request)
     {
+        if( !AuthMiddleware::AuthCheck() )
+            AuthMiddleware::removeAuth();
         try {
             $userModel = new User();
             $user = $userModel->find( $request->id );

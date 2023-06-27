@@ -1,0 +1,58 @@
+version: "3.7"
+services:
+    pruebatecnica:
+        container_name: pruebatecnica
+        build:
+            context: ./
+            dockerfile: Dockerfile
+        ports:
+           - 8083:80
+        # restart: on-failure:4
+        volumes:
+            - ../:/var/www/html
+            # - ./docker/phpconfig/000-default.conf:/etc/apache2/sites-available/000-default.conf
+            - ./phpconfig/php.ini:/usr/local/etc/php/php.ini
+        depends_on:
+            - pruebatecnica-bd
+        networks:
+            - pruebatecnicanet
+
+    pruebatecnica-bd:
+        image: mariadb:10.6.2
+        container_name: pruebatecnica-bd
+        volumes:
+            - ./mysql:/var/lib/mysql
+            - ../mysqlseed/database.sql:/docker-entrypoint-initdb.d/user.sql
+        # restart: always
+        environment:
+            MYSQL_ALLOW_EMPTY_PASSWORD: "no"
+            MYSQL_ROOT_PASSWORD: ${DOCKER_MYSQL_ROOT_PASSWORD}
+            MYSQL_USER: ${DOCKER_MYSQL_USER}
+            MYSQL_PASSWORD: ${DOCKER_MYSQL_PASSWORD}
+            MYSQL_DATABASE: ${DOCKER_MYSQL_DATABASE}
+        ports:
+            - 3308:3306
+        networks:
+            - pruebatecnicanet
+
+    pruebatecnica-phpmyadmin:
+        container_name: pruebatecnica-phpmyadmin
+        image: phpmyadmin/phpmyadmin
+        ports:
+            - 9992:80
+        environment:
+            MYSQL_USER: ${DOCKER_MYSQL_USER}
+            MYSQL_PASSWORD: ${DOCKER_MYSQL_PASSWORD}
+            MYSQL_DATABASE: ${DOCKER_MYSQL_DATABASE}
+            PMA_HOST: pruebatecnica-bd
+            UPLOAD_LIMIT: 10M
+        links:
+            - pruebatecnica-bd
+        depends_on:
+            - pruebatecnica-bd
+        networks:
+            - pruebatecnicanet
+
+networks:
+    pruebatecnicanet:
+        driver: bridge

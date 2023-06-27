@@ -38,19 +38,6 @@ class Route extends Controller{
         ];
         array_push(self::$routes, $data);
     }
-    // public static function middleware($uri, $callback)
-    // {
-    //     $middleware = new $uri[0];
-    //     $a = $middleware->{$uri[1]}();
-    //     if($a)
-    //         return $callback();
-    //     else{
-    //         var_dump('no paso');
-    //         return false;
-    //     }
-    //         // return redirect('');
-        
-    // }
 
     /**
      * Encuentra la ruta para ejecutar el callback correspondiente
@@ -85,7 +72,6 @@ class Route extends Controller{
             }
             return null;
         });
-        
         if(!$routeMatch){
             return redirect('/error');
         }
@@ -130,9 +116,11 @@ class Route extends Controller{
         
         if (strpos($route, ':') !== false) {
             foreach ($segments as $key => $segment) {
-                $paramName = str_replace(':', '', $segment);
-                $segments[$key] = '([a-zA-Z0-9]+)';
-                $paramNames[] = $paramName;
+                if (strpos($segment, ':') === 0) {
+                    $paramName = str_replace(':', '', $segment);
+                    $segments[$key] = '([a-zA-Z0-9]+)';
+                    $paramNames[] = $paramName;
+                }
             }
             $route = implode('/', $segments);
             return ['route' => $route, 'paramNames' => $paramNames];

@@ -7,9 +7,10 @@
     <?php include '../resources/templates/head.php' ?>
 </head>
 <body class="container-admin">
-    <header>
-    </header>
+    
+    <?php include '../resources/templates/header.php'; ?>
     <?php include '../resources/templates/nav.php'; ?>
+    
     <section class="section-container">
         <article class="card">
             <div class="card-header">
