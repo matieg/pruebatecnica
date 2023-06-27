@@ -58,3 +58,30 @@ if (! function_exists('auth')) {
         return AuthMiddleware::getAuth();
     }
 }
+
+ /**
+ * Guarda el mensaje en la variable session
+ * @param string $message Mensaje que se va a mostrar
+ * @param string $type tipo de mensaje, la clase css que se va a usar pueden ser (message-error message-success message-info)
+ */
+function setMessage(string $message, ?string $type = ''): void
+{
+    $_SESSION['message'] = [];
+    $_SESSION['message']['type'] = $type;
+    $_SESSION['message']['text'] = $message;
+}
+
+ /**
+ * Retorna el mensaje guardado
+ * @return object|null Retorna $message->type $message->text sino existe $message retorna null
+ */
+function getMessage(): object|null
+{
+    if( !isset($_SESSION['message']) || !$_SESSION['message'] )
+        return null;
+
+    $message = $_SESSION['message'];
+    $_SESSION['message'] = [];
+
+    return (object)$message;
+}

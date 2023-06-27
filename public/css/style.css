@@ -126,10 +126,23 @@ nav ul li:hover{
 .message{
     padding: 0 10px;
     border-radius: 3px;
+    border: 1px solid  rgb(233, 233, 233);
 }
 .message-error{
     color: #fff;
     background-color: var(--red);
+}
+.message-success{
+    color: #fff;
+    background-color: var(--green);
+}
+.message-info{
+    color: #fff;
+    background-color: var(--blue);
+}
+.message-warning{
+    color: var(--black);
+    background-color: var(--yellow);
 }
 
 

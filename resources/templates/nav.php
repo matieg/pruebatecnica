@@ -8,6 +8,9 @@
             <a href="user/create">Crear Usuario</a>
         </li>
         <li>
+            <a href="user/<?= auth()->id ?>">Modificar mis datos</a>
+        </li>
+        <li>
             <a href="logout">Salir</a>
         </li>
     </ul>

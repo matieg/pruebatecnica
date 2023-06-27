@@ -13,7 +13,7 @@
     <section class="section-container">
         <article class="card">
             <div class="card-header">
-                <h1>Crear usuarios</h1>
+                <h1>Modificar datos</h1>
             </div>
             <div class="card-container">
                 <form action="user/<?= $user->id ?>" method="POST" class="form-container" onsubmit="return validation();">
@@ -31,6 +31,13 @@
                         <input type="text" name="username" class="validate" value="<?= $user->username ?>">
                     </div>
                     <div class="d-flex justify-content-end">
+                        <?php if( auth()->id == $user->id ): ?>
+                            <a href="password-change" class="btn btn-primary">Modificar mi contraseña</a>
+                        <?php else: ?>
+                            <form class="d-flex" action="password-reset/<?= $user->id ?>" method="POST">                                    
+                                <button type="button" onclick="sendForm()" class="btn btn-primary">Reestablecer contraseña</button>
+                            </form>
+                        <?php endif ?>
                         <button class="btn btn-success">Guardar</button>
                     </div>
                 </form>                
@@ -38,5 +45,8 @@
         </article>
     </section>
     <?php include '../resources/templates/scripts.php' ?>
+    <script>
+        const sendForm = ()=> event.target.closest('form').submit();
+    </script>
 </body>
 </html>

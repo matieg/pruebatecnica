@@ -2,13 +2,15 @@
 
 namespace app\Controllers;
 
-use app\Middleware\AuthMiddleware;
-use app\Models\User;
+use App\Middleware\AuthMiddleware;
+use App\Models\User;
 use Exception;
 
-class UserController{
+class UserController
+{
 
-    public function index(){
+    public function index()
+    {    
         if( !AuthMiddleware::AuthCheck() )
             AuthMiddleware::removeAuth();
 
@@ -18,18 +20,20 @@ class UserController{
         return view('users.index', ['users' => $users ]);
     }
 
-    public function create(){
+    public function create()
+    {
         if( !AuthMiddleware::AuthCheck() )
             AuthMiddleware::removeAuth();
 
         return view('users.create');        
     }
 
-    public function store($request){
+    public function store($request)
+    {
         if( !AuthMiddleware::AuthCheck() )
             AuthMiddleware::removeAuth();
 
-        try{
+        try {
             if( empty($request->name) )
                 throw new Exception('Nombre requerido');
             if( empty($request->username) )
@@ -39,34 +43,50 @@ class UserController{
             $request->password = password_hash('123456', PASSWORD_BCRYPT);
             $userModel->create($request);
 
+            setMessage('El usuario se creo con éxito. <br/>Su contraseña por defecto es 123456.', 'message-success');
+            
             return redirect('/home');
-        }catch(Exception $error){
+
+        } catch(Exception $error) {
             return view('users.create', ['message' => 'Ocurrió un error al guardar el usuario.']);
         }
     }
 
-    public function show($user){
+    public function show($user)
+    {
+        if( !AuthMiddleware::AuthCheck() )
+            AuthMiddleware::removeAuth();
+            
         $userModel = new User();
         $user = $userModel->find($user->id);
+
         return view('users.show', compact('user') );        
     }
 
-    public function edit(){
+    public function edit()
+    {
         $users = new User();        
     }
 
-    public function update($user, $request){
+    public function update($user, $request)
+    {
         $userModel = new User();
 
         $request['id'] = $user->id;
         $userModel->update($request);
 
+        setMessage('La modificación se realizo con éxito.', 'message-success');
+
         return redirect('/home');        
     }
 
-    public function destroy($user){
+    public function destroy($user)
+    {
         $userModel = new User();
         $userModel->delete($user->id);
+
+        setMessage('Usuario eliminado.', 'message-success');
+
         return redirect('/home');     
     }
 }

@@ -37,5 +37,6 @@ class Controller
     {
         $projectName = projectName() ? '/'.projectName() : '';
         header("Location: {$projectName}{$route}");
+        exit();
     }
 }

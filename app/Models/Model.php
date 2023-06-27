@@ -82,8 +82,10 @@ class Model extends Connection
     }
 
     public function update($data){
+
+        $data = is_array($data) ? (object) $data : $data;
         
-        $id = $data[$this->primaryKey];
+        $id = $data->{$this->primaryKey};
 
         $fields = [];
         foreach($data as $key => $value){
@@ -93,7 +95,7 @@ class Model extends Connection
 
         $sql = "UPDATE {$this->table} SET {$fields} WHERE {$this->primaryKey} = ?";
 
-        $values = array_values($data);
+        $values = array_values(get_object_vars($data));
         $values[] = $id;
 
         $this->query($sql, $values);

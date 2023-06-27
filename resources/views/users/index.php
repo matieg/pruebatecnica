@@ -18,6 +18,13 @@
                 <h1>Listado de usuarios</h1>
             </div>
             <div class="card-container">
+
+                <?php if( $sessionMessage = getMessage() ): ?>
+                    <div class="form-container message <?= $sessionMessage->type ?>">
+                        <p class="text-center"> <?= $sessionMessage->text ?> </p> 
+                    </div>
+                <?php endif ?>
+
                 <table class="table">
                     <thead>
                         <tr>
