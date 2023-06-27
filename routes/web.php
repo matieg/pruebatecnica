@@ -17,9 +17,10 @@ Route::get('/password-change', function(){
     return view('users.password-change');
 });
 
-Route::post('/password-change', [AuthController::class, 'passwordChange']);
+Route::post('/password/change', [AuthController::class, 'passwordChange']);
 
-Route::post('/password-reset/:id', [AuthController::class, 'passwordReset']);
+Route::get('/password/reset/:id', [AuthController::class, 'passwordReset']);
+// Route::post('/password/reset/:id', [AuthController::class, 'passwordReset']);
 
 Route::get('/home', [UserController::class, 'index'] );
 

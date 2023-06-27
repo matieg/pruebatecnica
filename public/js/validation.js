@@ -20,23 +20,23 @@ const validation = () => {
 const inputsValidatePassword = Array.from(document.querySelectorAll('.validate-password'));
 const validationPassword = () => {
     let isValid = validation();
-    if (inputsValidatePassword[1].value !== inputsValidatePassword[2].value) {
-
-        inputsValidatePassword[1].previousElementSibling.classList.remove('d-none')
-        inputsValidatePassword[1].classList.add('is-invalid')
-        inputsValidatePassword[1].previousElementSibling.innerHTML = "Las contraseñas no coinciden"
+    const newpassword = document.querySelector('#newpassword');
+    const repeatpassword = document.querySelector('#repeatpassword');
+    if (newpassword.value !== repeatpassword.value) {
         
-        inputsValidatePassword[2].previousElementSibling.classList.remove('d-none')
-        inputsValidatePassword[2].classList.add('is-invalid')
-        inputsValidatePassword[2].previousElementSibling.innerHTML = "Las contraseñas no coinciden"
+        newpassword.previousElementSibling.classList.remove('d-none')
+        newpassword.classList.add('is-invalid')
+        newpassword.previousElementSibling.innerHTML = "Las contraseñas no coinciden"
+        
+        repeatpassword.previousElementSibling.classList.remove('d-none')
+        repeatpassword.classList.add('is-invalid')
+        repeatpassword.previousElementSibling.innerHTML = "Las contraseñas no coinciden"
         isValid = false;
     }else{
         inputsValidatePassword[1].previousElementSibling.innerHTML = "Campo requerido."
-
-        inputsValidatePassword[2].previousElementSibling.innerHTML = "Campo Requerido."
-        isValid = true;
+        repeatpassword.previousElementSibling.innerHTML = "Campo Requerido."
+        // isValid = true;
     }
-    console.log(isValid);
-    return false;
+    return isValid;
 }
   

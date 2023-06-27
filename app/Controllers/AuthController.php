@@ -51,11 +51,14 @@ class AuthController{
             if( empty($request->repeatpassword) )
                 throw new Exception('Debe repetir su nueva password.');
 
+                
             $userModel = new User();
-
             $user = $userModel->find( auth()->id );
-            $user->password = password_hash( $request->newpassword, PASSWORD_BCRYPT );
             
+            if( password_verify($request->newpassword, $user->password) )
+                throw new Exception('La contraseña no puede ser igual a la anterior.');
+            
+            $user->password = password_hash( $request->newpassword, PASSWORD_BCRYPT );
             $userModel->update($user);
             
             setMessage('Su contraseña se modificó con éxito.', 'message-success');

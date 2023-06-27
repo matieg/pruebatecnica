@@ -16,24 +16,24 @@
                 <h1>Crear usuarios</h1>
             </div>
             <div class="card-container">
-                <form action="password-change" method="POST" class="form-container" onsubmit="return validationPassword();">
+                <form action="password/change" method="POST" class="form-container" onsubmit="return validationPassword();">
                     <?php if(isset($message)): ?>
                         <div class="message message-error"> <p class="text-center"> <?= $message ?? '' ?> </p> </div>
                     <?php endif; ?>
                     <div class="input-container">
                         <label for="">Contraseña</label>
                         <span class="tooltip d-none">Campo requerido.</span>
-                        <input type="password" name="password" class="validate validate-password">
+                        <input type="password" id="password" name="password" class="validate validate-password">
                     </div>
                     <div class="input-container">
                         <label for="">Contraseña nueva</label>
                         <span class="tooltip d-none">Campo requerido.</span>
-                        <input type="password" name="newpassword" class="validate validate-password">
+                        <input type="password" id="newpassword" name="newpassword" class="validate validate-password">
                     </div>
                     <div class="input-container">
                         <label for="">Repetir Contraseña</label>
                         <span class="tooltip d-none">Campo requerido.</span>
-                        <input type="password" name="repeatpassword" class="validate validate-password">
+                        <input type="password" id="repeatpassword" name="repeatpassword" class="validate validate-password">
                     </div>
                     <div class="d-flex justify-content-end">
                         <button class="btn btn-success">Guardar</button>

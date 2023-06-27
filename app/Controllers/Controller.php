@@ -12,7 +12,6 @@ class Controller
      */
     public function view(string $route, array $data = [])
     {
-        //destructura el array y me deja accesder a ellas directamente
         extract($data);
         $route = str_replace('.', '/', $route);
         $routePath = basePath('resources/views/'.$route.'.php');        
