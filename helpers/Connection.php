@@ -6,10 +6,10 @@ use mysqli;
 
 class Connection
 {
-    protected $db_host = DB_HOST;
-    protected $db_user = DB_USER;
-    protected $db_pass = DB_PASS;
-    protected $db_name = DB_NAME;
+    protected string $db_host = DB_HOST;
+    protected string $db_user = DB_USER;
+    protected string $db_pass = DB_PASS;
+    protected string $db_name = DB_NAME;
     protected $connection;
 
     public function __construct()

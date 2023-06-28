@@ -85,9 +85,9 @@ class UserController
     /**
      * @param object $request
      * @param int $id
-     * @return void
+     * @return string
      */
-    public function update(object $request, int $id): void
+    public function update(object $request, int $id): string
     {
         try {
             
@@ -122,6 +122,6 @@ class UserController
 
         setMessage('Usuario eliminado.', 'message-success');
 
-        return redirect('/home');     
+        redirect('/home');     
     }
 }
