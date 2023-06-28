@@ -14,8 +14,9 @@ class Model extends Connection
      * @param string $sql
      * @param array $data
      * @param string|null $params tipo de dato que se va a ejecutar en la sentencia preparada
+     * @return Model
      */
-    public function query(string $sql, array $data = [], string|null $params = null)
+    public function query(string $sql, array $data = [], string|null $params = null): Model
     {
         if($data){
 
@@ -74,9 +75,10 @@ class Model extends Connection
     /**
      * @param string $column
      * @param string $operator
-     * @return object
+     * @param string|int|null $value
+     * @return Model
      */
-    public function where($column, $operator , $value = null): object
+    public function where(string $column, string $operator , string|int|null $value = null): Model
     {
         if($value == null){
             $value = $operator;
