@@ -1,6 +1,8 @@
 <?php
 namespace app\Middleware;
 
+use app\Models\User;
+
 class AuthMiddleware{
 
     /**
@@ -10,18 +12,16 @@ class AuthMiddleware{
     public static function AuthCheck(): bool
     {
         if( isset($_SESSION['auth']) && isset( $_SESSION ) ){
-            // return redirect('./');
             return true;
         }
-        // session_destroy();
         return false;
     }
 
     /**
      * Obtiene los datos del usuario autenticado
-     * @return User|null Retorna los datos del usuario, sino retorna null
+     * @return object|null Retorna los datos del usuario, sino retorna null
      */
-    public static function getAuth()
+    public static function getAuth(): object|null
     {
         if( isset($_SESSION['auth']) && isset( $_SESSION ) )
         {
@@ -32,7 +32,7 @@ class AuthMiddleware{
 
     /**
      * Guarda los datos del usuario serializado
-     * @param array Datos del usuario
+     * @param array $data Datos del usuario
      */
     public static function setAuth($data): void
     {   
@@ -42,11 +42,11 @@ class AuthMiddleware{
     /**
      * Elimina la session del usuario autenticado y retorna al inicio
      */
-    public static function removeAuth()
+    public static function removeAuth(): void
     {   
         unset($_SESSION['auth']);
         session_destroy();
-        return redirect('/');
+        redirect('/');
     }
 
 }

@@ -42,10 +42,11 @@ if (! function_exists('view')) {
  * @param string $route Url de la vista a la que se va a redireccionar
  */
 if (! function_exists('redirect')) {
-    function redirect(string $route)
+    
+    function redirect(string $route): void
     {
         $controller = new Controller();
-        return $controller->redirect($route);
+        $controller->redirect($route);
     }
 }
 

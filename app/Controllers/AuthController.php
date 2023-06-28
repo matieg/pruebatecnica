@@ -13,6 +13,7 @@ class AuthController{
         try{
             if( empty($request->username) )
                 throw new Exception('Nombre de usuario requerido.');
+                
             if( empty($request->password) )
                 throw new Exception('Password requerido.');
 

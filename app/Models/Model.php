@@ -7,8 +7,8 @@ class Model extends Connection
 {
     protected $connection;
     protected $query;
-    protected $table;
-    protected $primaryKey = 'id';
+    protected string $table;
+    protected string $primaryKey = 'id';
 
     /**
      * @param string $sql
@@ -37,7 +37,7 @@ class Model extends Connection
         return $this->query->fetch_object();
     }
 
-    public function get()
+    public function get(): array
     {
         $return_array = [];
         while($user = $this->query->fetch_object()) {
@@ -92,23 +92,33 @@ class Model extends Connection
         return $this;
     }
 
-    public function create($data){
+    /**
+     * @param object $data
+     * @return object Retorna los datos creados 
+     */
+    public function create(object $data): object
+    {
         
-        $columns = array_keys(get_object_vars($data));
+        $columns = array_keys( get_object_vars($data) );
         $columns = implode(', ', $columns);
         
-        $values = array_values(get_object_vars($data));
+        $values = array_values( get_object_vars($data) );
         $valuesSql = str_repeat('?, ', count($values) -1 ) . '?';
         
         $sql = "INSERT INTO {$this->table} ({$columns}) VALUES ({$valuesSql})";
         $this->query($sql, $values);
 
         $last_id = $this->connection->insert_id;
+
         return $this->find($last_id);
-        
     }
 
-    public function update($data){
+    /**
+     * @param object|array $data
+     * @return object Retorna los datos que se modificaron.
+     */
+    public function update(object|array $data): object
+    {
 
         $data = is_array($data) ? (object) $data : $data;
         
@@ -130,14 +140,24 @@ class Model extends Connection
         return $this->find($id);
     }
     
-    public function delete($data){
+    /**
+     * Elimina de la base de datos
+     * @param array|string|int valor de la clave primaria
+     * @return bool
+     */
+    public function delete($data): bool
+    {
         if(is_array($data))
             $id = $data[$this->primaryKey];
         else
             $id = $data;
 
         $sql = "DELETE FROM {$this->table} WHERE {$this->primaryKey} = ?";
-        $this->query($sql, [$id], 'i');
+
+        $dataType = is_int($data) ? 'i' : 's';
+
+        $this->query($sql, [$id], $dataType);
+
         return true;
     }
 }

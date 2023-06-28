@@ -3,7 +3,7 @@ namespace app\Models;
 
 class User extends Model
 {
-    protected $table = 'user';
+    protected string $table = 'user';
 
     public $id, $name, $username, $password;
 

@@ -47,12 +47,15 @@ class UserController
             
             return redirect('/home');
 
-        } catch(Exception $error) {
-            return view('users.create', ['message' => 'Ocurrió un error al guardar el usuario.']);
+        } catch(Exception $exception) {
+            return view('users.create', ['message' => 'Ocurrió un error al guardar el usuario.'.$exception]);
         }
     }
 
-    public function show($id)
+    /**
+     * @param int $id
+     */
+    public function show(int $id)
     {
         if( !AuthMiddleware::AuthCheck() )
             AuthMiddleware::removeAuth();
@@ -68,16 +71,33 @@ class UserController
         $users = new User();        
     }
 
-    public function update($request, $id)
+    /**
+     * @param object $request
+     * @param int $id
+     * 
+     */
+    public function update(object $request, int $id)
     {
-        $userModel = new User();
+        try {
+            
+            $request->id = $id;
+            
+            if( empty($request->name) )
+                throw new Exception('Nombre requerido');
 
-        $request->id = $id;
-        $userModel->update($request);
+            if( empty($request->username) )
+                throw new Exception('Nombre de usuario requerido');
 
-        setMessage('La modificación se realizo con éxito.', 'message-success');
+            $userModel = new User();        
+            $userModel->update($request);
+            
+            setMessage('La modificación se realizo con éxito.', 'message-success');
+            
+            return redirect('/home');
 
-        return redirect('/home');        
+        } catch (Exception $exception) {
+            return view('users.show', ['message' => 'Ocurrió un error al modificar el usuario.', 'user' => $request]);
+        }
     }
 
     public function destroy($id)
