@@ -52,13 +52,13 @@ class UserController
         }
     }
 
-    public function show($user)
+    public function show($id)
     {
         if( !AuthMiddleware::AuthCheck() )
             AuthMiddleware::removeAuth();
             
         $userModel = new User();
-        $user = $userModel->find($user->id);
+        $user = $userModel->find($id);
 
         return view('users.show', compact('user') );        
     }
@@ -68,11 +68,11 @@ class UserController
         $users = new User();        
     }
 
-    public function update($user, $request)
+    public function update($request, $id)
     {
         $userModel = new User();
 
-        $request['id'] = $user->id;
+        $request->id = $id;
         $userModel->update($request);
 
         setMessage('La modificación se realizo con éxito.', 'message-success');
@@ -80,10 +80,10 @@ class UserController
         return redirect('/home');        
     }
 
-    public function destroy($user)
+    public function destroy($id)
     {
         $userModel = new User();
-        $userModel->delete($user->id);
+        $userModel->delete($id);
 
         setMessage('Usuario eliminado.', 'message-success');
 

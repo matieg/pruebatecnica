@@ -8,7 +8,7 @@ use Exception;
 
 class AuthController{
 
-    public function login(object $request)
+    public function login($request)
     {
         try{
             if( empty($request->username) )
@@ -69,13 +69,13 @@ class AuthController{
         }
     }
     
-    public function passwordReset($request)
+    public function passwordReset($id)
     {
         if( !AuthMiddleware::AuthCheck() )
             AuthMiddleware::removeAuth();
         try {
             $userModel = new User();
-            $user = $userModel->find( $request->id );
+            $user = $userModel->find( $id );
             $user->password = password_hash( '123456', PASSWORD_BCRYPT );
             $userModel->update($user);
             

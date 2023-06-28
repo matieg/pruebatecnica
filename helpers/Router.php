@@ -3,14 +3,14 @@ namespace Helpers;
 
 use App\Controllers\Controller;
 
-class Route extends Controller{
+class Route extends Controller
+{
     private static $routes = [];
-    private static $paramsMatches;
     
     /**
-     * Rutas que se ejecutaran con el metodo get
-     * @param string $uri Url de la ruta
-     * @param callable $callback funcion asociada a la ruta (controlador que usa)
+     * 
+     * @param string $uri Url GET
+     * @param array|callable $callback funcion asociada a la ruta (controlador que usa)
      */
     public static function get(string $uri, array|callable $callback): void
     {
@@ -24,9 +24,9 @@ class Route extends Controller{
     }
 
     /**
-     * Rutas que se ejecutaran con el metodo post
-     * @param string $uri Url de la ruta
-     * @param callable $callback funcion asociada a la ruta (controlador que usa)
+     * 
+     * @param string $uri Url POST
+     * @param array|callable $callback funcion asociada a la ruta (controlador que usa)
      */
     public static function post(string $uri, array|callable $callback): void
     {
@@ -44,56 +44,36 @@ class Route extends Controller{
      */
     public static function dispatch()
     {        
-        $projectName = projectName();
-        
         $uri = $_SERVER['REQUEST_URI'];
         
         $uri = trim($uri, '/');
         
         $method = $_SERVER['REQUEST_METHOD'];
         
-        $postParams = $_POST ?? null;
-
         $routesMethod = array_filter(self::$routes, function($route) use ($method){
             if($route['method'] == $method)
                 return $route;
             return null;
         });
-        $routeMatch = array_filter($routesMethod, function($route) use ($uri, $projectName){
-            
-            $route['uri'] = self::replaceRouteParams($route['uri'])['route'] ?? $route['uri'];
-            
-            $fullRoute = $projectName.'/'.$route['uri'];
-            $fullRoute = trim($fullRoute, '/');
-            
-            if( preg_match("#^$fullRoute$#", $uri, $matches) ){
-                self::$paramsMatches = $matches;
-                return $route;
-            }
-            return null;
-        });
+
+        $routeMatch = self::findRouteMatch($routesMethod, $uri);
+
         if(!$routeMatch){
             return redirect('/error');
         }
 
-        $routeMatch = array_values($routeMatch)[0];
-        
         $callback = $routeMatch['callback'];
         
-        $paramsReplacedNames = self::replaceRouteParams($routeMatch['uri']);
-
-        if($paramsReplacedNames)
-            $paramsReplacedNames = array_combine($paramsReplacedNames['paramNames'], array_slice(self::$paramsMatches, 1));
-        else
-            $paramsReplacedNames = $postParams;
-        
         if( is_callable($callback) && !is_array($callback) ){
-            $response = $callback( (object) $paramsReplacedNames, (object) $postParams );
+            $response = $callback( ...$routeMatch['paramsCombined'] );
         }
         
-        if( is_array($callback) ){                
+        if( is_array($callback) ){
             $controller = new $callback[0];
-            $response = $controller->{ $callback[1] }( (object) $paramsReplacedNames, $postParams );
+            if($_POST)
+                $response = $controller->{ $callback[1] }( (object) $_POST , ...$routeMatch['paramsCombined'] );
+            else 
+                $response = $controller->{ $callback[1] }( ...$routeMatch['paramsCombined'] );
         }
 
         if( is_array($response) || is_object($response) ){
@@ -104,27 +84,73 @@ class Route extends Controller{
     }
 
     /**
-    * retorna la ruta con los parametros (:id) remplazados por expresiones regulares y sus nombres
-    * @param string $route ruta original
-    * @return array Retorna la ruta actualizada con expresiones regulares y los nombres de los parametros.
-    *               Si no se encuentran devuelve null
-    */
-    private static function replaceRouteParams(string $route): ?array
+     * @param array $routes 
+     * @param string $uri
+     * @return array|null Retorna un array de la ruta coincidente con la uri solicitada
+     */
+    private static function findRouteMatch(array $routes, string $uri): array|null
     {
+        foreach( $routes as $route) {
+
+            $routeReplaced = self::relpaceUrl($route['uri']);
+            
+            $projectName = projectName();
+            
+            $fullRoute = $projectName.'/'.$routeReplaced;
+            $fullRoute = trim($fullRoute, '/');
+            
+            if( preg_match("#^$fullRoute$#", $uri, $matches) ) {
+
+                $params = self::getParamsCombined($route['uri'], array_slice($matches, 1));
+            
+                return ['callback' => $route['callback'], 'paramsCombined' => $params];
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Reemplaza a la ruta los parametros (Ej= :id) por expresiones regulares 
+     * @param string $route
+     * @return string $route
+     */
+    public static function relpaceUrl(string $route): string
+    {
+        if (strpos($route, ':') === 0) 
+            return $route;
+
+        $segments = explode('/', $route);
+
+        foreach ($segments as $index => $segment) {
+            if (strpos($segment, ':') === 0) {
+                $segments[$index] = '([a-zA-Z0-9]+)';             
+            }
+        }
+        $route = implode('/', $segments);
+        return $route;
+    }
+
+    /**
+     * Crea un array tomando como clave lo que viene despues del : en la 
+     * que corresponde de $urlParamsValue 
+     * @param string $route
+     * @param array $urlParamsValues
+     * @return array array
+     */
+    public static function getParamsCombined(string $route, array $urlParamsValues): array
+    {
+        if (strpos($route, ':') === 0) {
+            return null;
+        }
         $paramNames = [];
         $segments = explode('/', $route);
         
-        if (strpos($route, ':') !== false) {
-            foreach ($segments as $key => $segment) {
-                if (strpos($segment, ':') === 0) {
-                    $paramName = str_replace(':', '', $segment);
-                    $segments[$key] = '([a-zA-Z0-9]+)';
-                    $paramNames[] = $paramName;
-                }
+        foreach ($segments as $segment) {
+            if (strpos($segment, ':') === 0) {
+                $paramName = str_replace(':', '', $segment);
+                $paramNames[] = $paramName;           
             }
-            $route = implode('/', $segments);
-            return ['route' => $route, 'paramNames' => $paramNames];
         }
-        return null;
+        return array_combine($paramNames, $urlParamsValues);
     }
 }

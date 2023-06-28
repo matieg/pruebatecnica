@@ -3,6 +3,7 @@
 use app\Controllers\AuthController;
 use app\Controllers\UserController;
 use app\Middleware\AuthMiddleware;
+use app\Models\User;
 use Helpers\Route;
 
 Route::get('/', function(){
@@ -36,6 +37,13 @@ Route::post('/user/delete/:id', [UserController::class, 'destroy'] );
 
 Route::get('/error', function(){
     return view('404');
+});
+
+
+Route::get('/user/:nombre/:id', function($nombre, $id){
+    $userModel = new User();
+    $user = $userModel->where( 'name', 'Matias')->first();
+    return $nombre;
 });
 
 Route::get('/create-db', function(){

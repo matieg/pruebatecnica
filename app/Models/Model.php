@@ -1,9 +1,7 @@
 <?php
 namespace app\Models;
 
-use Exception;
 use Helpers\Connection;
-use mysqli;
 
 class Model extends Connection
 {
@@ -12,7 +10,13 @@ class Model extends Connection
     protected $table;
     protected $primaryKey = 'id';
 
-    public function query($sql, $data = [], $params = null){
+    /**
+     * @param string $sql
+     * @param array $data
+     * @param string|null $params tipo de dato que se va a ejecutar en la sentencia preparada
+     */
+    public function query(string $sql, array $data = [], string|null $params = null)
+    {
         if($data){
 
             $params = $params ?? str_repeat('s', count($data));
@@ -27,12 +31,13 @@ class Model extends Connection
         return $this;
     }
 
-    public function first(){
+    public function first()
+    {
         return $this->query->fetch_object();
-        // return $this->query->fetch_assoc();
     }
 
-    public function get(){
+    public function get()
+    {
         $return_array = [];
         while($user = $this->query->fetch_object()) {
             $return_array[] = $user;
@@ -42,17 +47,37 @@ class Model extends Connection
     }
     
     //consultas
-    public function all(){
+
+    /**
+     * @return array Retorna un array con todos los registros de la tabla.
+     */
+    public function all(): array
+    {
         $sql = "SELECT * FROM {$this->table}";
+        
         return $this->query($sql)->get();
     }
 
-    public function find($id){
+    /**
+     * @param string|int $search
+     * @return object 
+     */
+    public function find(int|string $search): object
+    {
         $sql = "SELECT * FROM {$this->table} WHERE {$this->primaryKey} = ?";
-        return $this->query($sql, [$id], 'i')->first();
+
+        $searchType = is_int($search) ? 'i' : 's';
+        
+        return $this->query($sql, [$search], $searchType)->first();
     }
 
-    public function where($column, $operator , $value = null){
+    /**
+     * @param string $column
+     * @param string $operator
+     * @return object
+     */
+    public function where($column, $operator , $value = null): object
+    {
         if($value == null){
             $value = $operator;
             $operator = '=';
@@ -112,13 +137,5 @@ class Model extends Connection
         $sql = "DELETE FROM {$this->table} WHERE {$this->primaryKey} = ?";
         $this->query($sql, [$id], 'i');
         return true;
-    }
-
-    public function save(){
-        
-        // $sql = "INSERT INTO {$this->table} () VALUES ({$column}, {$operator}, {$value})";
-        // echo $sql;
-        // $this->query($sql);
-        return $this;
     }
 }
