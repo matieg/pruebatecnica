@@ -55,7 +55,7 @@ class UserController
 
             setMessage('El usuario se creo con éxito. <br/>Su contraseña por defecto es 123456.', 'message-success');
             
-            return redirect('/home');
+            redirect('/home');
 
         } catch(Exception $exception) {
             return view('users.create', ['message' => 'Ocurrió un error al guardar el usuario.'.$exception]);
@@ -104,7 +104,7 @@ class UserController
             
             setMessage('La modificación se realizo con éxito.', 'message-success');
             
-            return redirect('/home');
+            redirect('/home');
 
         } catch (Exception $exception) {
             return view('users.show', ['message' => 'Ocurrió un error al modificar el usuario.', 'user' => $request]);
