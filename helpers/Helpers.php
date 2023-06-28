@@ -39,7 +39,7 @@ if (! function_exists('view')) {
 
  /**
  * Verifica si ya esta creada la funcion redirect y redirecciona a una vista ya creada en algun controlador
- * @param string $route Url de la vista a la que se va a redireccionar
+ * @param void $route Url de la vista a la que se va a redireccionar
  */
 if (! function_exists('redirect')) {
     

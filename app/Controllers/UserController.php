@@ -9,7 +9,10 @@ use Exception;
 class UserController
 {
 
-    public function index()
+    /**
+     * @return string
+     */
+    public function index(): string
     {    
         if( !AuthMiddleware::AuthCheck() )
             AuthMiddleware::removeAuth();
@@ -20,7 +23,10 @@ class UserController
         return view('users.index', ['users' => $users ]);
     }
 
-    public function create()
+    /**
+     * @return string
+     */
+    public function create(): string
     {
         if( !AuthMiddleware::AuthCheck() )
             AuthMiddleware::removeAuth();
@@ -28,7 +34,11 @@ class UserController
         return view('users.create');        
     }
 
-    public function store($request)
+    /**
+     * @param object $request
+     * @return string
+     */
+    public function store(object $request): string
     {
         if( !AuthMiddleware::AuthCheck() )
             AuthMiddleware::removeAuth();
@@ -54,8 +64,9 @@ class UserController
 
     /**
      * @param int $id
+     * @return string
      */
-    public function show(int $id)
+    public function show(int $id): string
     {
         if( !AuthMiddleware::AuthCheck() )
             AuthMiddleware::removeAuth();
@@ -66,17 +77,17 @@ class UserController
         return view('users.show', compact('user') );        
     }
 
-    public function edit()
-    {
-        $users = new User();        
-    }
+    // public function edit()
+    // {
+    //     $users = new User();        
+    // }
 
     /**
      * @param object $request
      * @param int $id
-     * 
+     * @return void
      */
-    public function update(object $request, int $id)
+    public function update(object $request, int $id): void
     {
         try {
             
@@ -100,7 +111,11 @@ class UserController
         }
     }
 
-    public function destroy($id)
+    /**
+     * @param int $id
+     * @return void
+     */
+    public function destroy(int $id): void
     {
         $userModel = new User();
         $userModel->delete($id);
