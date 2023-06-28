@@ -20,7 +20,7 @@ class Route extends Controller{
             'uri' => $uri,
             'callback' => $callback
         ];
-        array_push(self::$routes, $data);
+        self::$routes[] = $data;
     }
 
     /**
@@ -36,7 +36,7 @@ class Route extends Controller{
             'uri' => $uri,
             'callback' => $callback
         ];
-        array_push(self::$routes, $data);
+        self::$routes[] = $data;
     }
 
     /**
