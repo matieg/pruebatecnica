@@ -131,8 +131,7 @@ class Route extends Controller
     }
 
     /**
-     * Crea un array tomando como clave lo que viene despues del : en la 
-     * que corresponde de $urlParamsValue 
+     * Crea un array tomando como clave lo que viene despues del : en la url que corresponde de $urlParamsValue 
      * @param string $route
      * @param array $urlParamsValues
      * @return array array

@@ -2,10 +2,11 @@
 namespace app\Models;
 
 use Helpers\Connection;
+use mysqli;
 
 class Model extends Connection
 {
-    protected $connection;
+    protected mysqli $connection;
     protected $query;
     protected string $table;
     protected string $primaryKey = 'id';
@@ -88,7 +89,7 @@ class Model extends Connection
         $sql = "SELECT * FROM {$this->table} WHERE {$column} {$operator} ?";
 
         $this->query($sql, [$value]);
-
+        
         return $this;
     }
 
