@@ -12,6 +12,11 @@ Route::post('/', [AuthController::class, 'login']);
 
 Route::get('/logout', [AuthController::class, 'logout']);
 
+Route::get('/register', function(){
+    return view('register');
+});
+Route::post('/register', [AuthController::class, 'register']);
+
 Route::get('/password-change', function(){
     return view('users.password-change');
 });
@@ -19,7 +24,6 @@ Route::get('/password-change', function(){
 Route::post('/password/change', [AuthController::class, 'passwordChange']);
 
 Route::get('/password/reset/:id', [AuthController::class, 'passwordReset']);
-// Route::post('/password/reset/:id', [AuthController::class, 'passwordReset']);
 
 Route::get('/home', [UserController::class, 'index'] );
 

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Home - Prueba técnica</title>
     <?php include '../resources/templates/head.php' ?>
 </head>
 <body>
@@ -15,6 +15,12 @@
                 <?php if(isset($message)): ?>
                 <div class="message message-error"> <p> <?= $message ?? '' ?> </p> </div>
                 <?php endif; ?>
+                
+                <?php if( $sessionMessage = getMessage() ): ?>
+                    <div class="form-container message <?= $sessionMessage->type ?>">
+                        <p class="text-center"> <?= $sessionMessage->text ?> </p> 
+                    </div>
+                <?php endif ?>
 
                 <div class="input-container">
                     <label for="">Usuario</label>
@@ -27,6 +33,7 @@
                     <input type="password" name="password" class="validate">
                 </div>
                 <div class="d-flex justify-content-end">
+                    <a href="register" class="btn">Registrarme</a>
                     <button class="btn btn-primary">Ingresar</button>
                 </div>
             </form>

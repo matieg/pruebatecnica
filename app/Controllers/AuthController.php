@@ -8,7 +8,11 @@ use Exception;
 
 class AuthController{
 
-    public function login($request)
+    /**
+     * @param object $request
+     * @return string
+     */
+    public function login($request): string
     {
         try{
             if( empty($request->username) )
@@ -31,13 +35,16 @@ class AuthController{
             
             AuthMiddleware::setAuth($user);
             
-            return redirect('/home');
-        }catch(Exception $error){
-            return view('index', array('message' => $error->getMessage()));
+            redirect('/home');
+        }catch(Exception $exception){
+            return view('index', array('message' => $exception->getMessage()));
         }
     }
 
-    public function passwordChange($request)
+    /**
+     * @param object $request
+     */
+    public function passwordChange($request): string
     {
         if( !AuthMiddleware::AuthCheck() )
             AuthMiddleware::removeAuth();
@@ -64,13 +71,17 @@ class AuthController{
             
             setMessage('Su contraseña se modificó con éxito.', 'message-success');
             
-            return redirect('/home');
-        } catch(Exception $error) {
-            return view('users.password-change', array('message' => $error->getMessage()));
+            redirect('/home');
+        } catch(Exception $exception) {
+            return view('users.password-change', array('message' => $exception->getMessage()));
         }
     }
     
-    public function passwordReset($id)
+    /**
+     * @param int $id
+     * @return string
+     */
+    public function passwordReset(int $id): string
     {
         if( !AuthMiddleware::AuthCheck() )
             AuthMiddleware::removeAuth();
@@ -82,15 +93,49 @@ class AuthController{
             
             setMessage('La contraseña se reestableció correctamente.', 'message-success');
             
-            return redirect('/home');
-        } catch(Exception $error) {
-            return view('users.show', array('message' => $error->getMessage()));
+            redirect('/home');
+        } catch(Exception $exception) {
+            return view('users.show', array('message' => $exception->getMessage()));
         }
     }
 
-    public function logout()
+    /**
+     * @param object $request
+     * @return string
+     */
+    public function register(object $request): string
+    {
+        try {
+
+            if( empty($request->name) )
+                throw new Exception('Nombre requerido.');
+            
+            if( empty($request->username) )
+                throw new Exception('Nombre de usuario requerido.');
+            
+            if( empty($request->password) )
+                throw new Exception('Password requerido.');
+
+            $userModel = new User();
+            $request->password = password_hash( $request->password , PASSWORD_BCRYPT );
+            $userModel->create($request);
+            
+            setMessage('Su registro se realizó con éxito. Ahora puede iniciar sesion', 'message-success');
+            
+            redirect('/');
+            
+        } catch (Exception $exception) {
+            setMessage('Ocurrió un error al intentar registrarse. Por favor, intente nuevamente.', 'message-error');
+            return view('register');
+        }
+    }
+
+    /**
+     * @return void
+     */
+    public function logout(): void
     {
         AuthMiddleware::removeAuth();
-        return redirect('/');
+        redirect('/');
     }
 }
