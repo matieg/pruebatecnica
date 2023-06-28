@@ -30,16 +30,16 @@ http://localhost/pruebatecnica
 
 Dirigirme a la carpeta en la que se va a alojar el proyecto y ejecutar el comando git para clonarlo.
 
-```cmd
+```shell
 git clone https://github.com/matieg/pruebatecnica.git
 ```
 
 Dirigirme a la carpeta dentro del proyecto:
-```cmd
+```shell
 cd pruebatecnica
 ```
 
-Cambiar en el archivo .env que se encuentra en la raiz del proyecto, las variables de entorno correspondientes a docker.
+Cambiar en el archivo .env, que se encuentra en la raiz del proyecto, las variables de entorno correspondientes a docker.
 Para esto comentar la seccion "otros" y descomentar la seccion "docker".
 
 Ejemplo:
@@ -64,7 +64,7 @@ DB_PASSWORD=workanda
 Una vez echo esto, moverme a la carpeta docker y ejectuar el comando para inicializarlo:
 Ejecutar el comando docker:
 
-```cmd
+```shell
 cd docker
 docker-compose up --build -d
 ```
@@ -74,6 +74,8 @@ Tambien genera la base de datos con un usuario de prueba.
 
 - **Para ejecutar el proyecto** = Abrir el navegador y escribir en la URL: http://localhost:8083
 - **Para ejecutar el phpmyadmin** = Abrir el navegador y escribir en la URL: http://localhost:9992
+
+Nota: Se eligieron esos puertos para tratar de evitar confictos con los puertos que normalmente se peuden tener en uso.
 
 ### las credenciales del usuario de prueba para el proyecto son:
 
