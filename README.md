@@ -2,6 +2,9 @@
 
 Este proyecto se ejecuta utilizando php 8.
 Podes ejecutarlo usando XAMPP o con Docker.
+## Opciones de ejecucion
+- Opción 1: XAMPP.
+- Opción 2: Docker.
 
 ## Ejecución con XAMPP
 
