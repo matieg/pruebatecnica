@@ -11,4 +11,4 @@ CREATE TABLE IF NOT EXISTS `user` (
 );
 
 INSERT INTO `user`(`id`, `name`, `username`, `password`) VALUES
-(0,'Matias', 'matias',  '$2y$10$TSoRGQw2lH/YB55ElIv5xuI5Egqh56rI1dF3p9ixntxSmMuVrvV3a');
+(0,'User Admin', 'user',  '$2y$10$TSoRGQw2lH/YB55ElIv5xuI5Egqh56rI1dF3p9ixntxSmMuVrvV3a');
