@@ -61,8 +61,9 @@ class Model extends Connection
     }
 
     /**
+     * 
      * @param string|int $search
-     * @return object 
+     * @return object Retorna el primer registro que encuentra en la base de datos
      */
     public function find(int|string $search): object
     {

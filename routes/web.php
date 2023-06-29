@@ -58,15 +58,11 @@ Route::get('/create-db', function(){
     $sql = file_get_contents($file);
     
     if (mysqli_multi_query($conn, $sql)) {
-        echo "Archivo SQL ejecutado correctamente.";
+        setMessage('El archivo SQL se ejecuto correctamente.', 'message-success');
+        redirect('/');
     } else {
-        echo "Error al ejecutar el archivo SQL: " . mysqli_error($conn);
+        return "Error al ejecutar el archivo SQL: " . mysqli_error($conn);
     }
 });
-
-
-// Route::middleware( [AuthMiddleware::class, 'AuthCheck'] , function(){
-    
-// });
 
 Route::dispatch();

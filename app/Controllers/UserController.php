@@ -46,10 +46,17 @@ class UserController
         try {
             if( empty($request->name) )
                 throw new Exception('Nombre requerido');
+
             if( empty($request->username) )
                 throw new Exception('Nombre de usuario requerido');
+
                 
             $userModel = new User();
+
+            $issetUser = $userModel->where('username', $request->username)->get();
+            if($issetUser)
+                throw new Exception('Ya existe ese nombre de usuario.');
+
             $request->password = password_hash('123456', PASSWORD_BCRYPT);
             $userModel->create($request);
 
@@ -58,7 +65,7 @@ class UserController
             redirect('/home');
 
         } catch(Exception $exception) {
-            return view('users.create', ['message' => 'Ocurrió un error al guardar el usuario.'.$exception]);
+            return view('users.create', ['message' => 'Ocurrió un error al guardar el usuario.'.$exception->getMessage()]);
         }
     }
 
@@ -99,7 +106,12 @@ class UserController
             if( empty($request->username) )
                 throw new Exception('Nombre de usuario requerido');
 
-            $userModel = new User();        
+            $userModel = new User();
+
+            $issetUser = $userModel->where('username', $request->username)->first();
+            if($issetUser && $issetUser->id != $id)
+                throw new Exception('Ya existe ese nombre de usuario.');
+
             $userModel->update($request);
             
             setMessage('La modificación se realizo con éxito.', 'message-success');
@@ -107,7 +119,7 @@ class UserController
             redirect('/home');
 
         } catch (Exception $exception) {
-            return view('users.show', ['message' => 'Ocurrió un error al modificar el usuario.', 'user' => $request]);
+            return view('users.show', ['message' => 'Ocurrió un error al modificar el usuario.'. $exception->getMessage(), 'user' => $request]);
         }
     }
 

@@ -43,6 +43,7 @@ class AuthController{
 
     /**
      * @param object $request
+     * @return string
      */
     public function passwordChange($request): string
     {
@@ -86,6 +87,7 @@ class AuthController{
         if( !AuthMiddleware::AuthCheck() )
             AuthMiddleware::removeAuth();
         try {
+            
             $userModel = new User();
             $user = $userModel->find( $id );
             $user->password = password_hash( '123456', PASSWORD_BCRYPT );
@@ -136,6 +138,7 @@ class AuthController{
     }
 
     /**
+     * Elimina la sesión y redirecciona al inicio 
      * @return void
      */
     public function logout(): void

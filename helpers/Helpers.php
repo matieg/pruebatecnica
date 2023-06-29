@@ -52,9 +52,10 @@ if (! function_exists('redirect')) {
 
  /**
  * Obtiene los datos del usuario autenticado
+ * @return object
  */
 if (! function_exists('auth')) {
-    function auth()
+    function auth(): object
     {
         return AuthMiddleware::getAuth();
     }
