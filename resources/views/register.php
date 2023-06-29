@@ -9,7 +9,7 @@
 <body>
     <section class="container">
         <div id="login" class="login">
-            <form action="register" method="post" class="form-container" onsubmit="return validation();">
+            <form action="register" method="post" class="form-container" onsubmit="return validation(); return false;">
                 <h1>Registrarme</h1>
 
                 <?php if( $sessionMessage = getMessage() ): ?>
@@ -34,6 +34,7 @@
                     <input type="password" name="password" class="validate">
                 </div>
                 <div class="d-flex justify-content-end">
+                    <a href="" class="btn">Volver al inicio</a>
                     <button class="btn btn-primary">Registrarme</button>
                 </div>
             </form>

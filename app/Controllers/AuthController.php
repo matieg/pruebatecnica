@@ -115,8 +115,13 @@ class AuthController{
             
             if( empty($request->password) )
                 throw new Exception('Password requerido.');
-
+                
             $userModel = new User();
+                
+            $issetUser = $userModel->where('username', $request->username)->get();
+            if($issetUser)
+                throw new Exception('Ya existe ese nombre de usuario.');
+
             $request->password = password_hash( $request->password , PASSWORD_BCRYPT );
             $userModel->create($request);
             
@@ -125,7 +130,7 @@ class AuthController{
             redirect('/');
             
         } catch (Exception $exception) {
-            setMessage('Ocurrió un error al intentar registrarse. Por favor, intente nuevamente.', 'message-error');
+            setMessage('Ocurrió un error al intentar registrarse. '.$exception->getMessage(), 'message-error');
             return view('register');
         }
     }
