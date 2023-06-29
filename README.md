@@ -72,6 +72,12 @@ cd docker
 docker-compose up --build -d
 ```
 
+Si lo estas ejecutando en el entorno de linux o subsistema de linux para windows (wsl), recomiendo ejecutar el comando anterior con sudo
+```shell
+cd docker
+sudo docker-compose up --build -d
+```
+
 En este punto docker iniciara el proyecto, con apache, php 8, mysql y phpmyadmin para ver la BD.
 Tambien genera la base de datos con un usuario de prueba.
 

@@ -42,7 +42,7 @@ class Route extends Controller
     /**
      * Encuentra la ruta para ejecutar el callback correspondiente
      */
-    public static function dispatch()
+    public static function dispatch(): void
     {        
         $uri = $_SERVER['REQUEST_URI'];
         
@@ -59,7 +59,7 @@ class Route extends Controller
         $routeMatch = self::findRouteMatch($routesMethod, $uri);
 
         if(!$routeMatch){
-            return redirect('/error');
+            redirect('/error');
         }
 
         $callback = $routeMatch['callback'];
@@ -139,7 +139,7 @@ class Route extends Controller
     public static function getParamsCombined(string $route, array $urlParamsValues): array
     {
         if (strpos($route, ':') === 0) {
-            return null;
+            return [];
         }
         $paramNames = [];
         $segments = explode('/', $route);
